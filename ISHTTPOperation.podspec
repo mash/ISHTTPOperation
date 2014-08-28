@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/ishkawa/ISHTTPOperation"
   s.author       = { "Yosuke Ishikawa" => "y@ishkawa.org" }
   s.source       = { :git => "https://github.com/ishkawa/ISHTTPOperation.git", :tag => "1.2.0" }
-  s.platform     = :ios, '4.3'
+  s.platforms    = { :ios => '4.3', :osx => '10.8' }
   s.requires_arc = true
   s.source_files = 'ISHTTPOperation/**/*.{h,m}'
   s.license      = {
