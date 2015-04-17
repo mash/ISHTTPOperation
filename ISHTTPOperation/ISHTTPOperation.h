@@ -11,11 +11,12 @@
 @property (nonatomic, readonly) NSHTTPURLResponse *response;
 @property (nonatomic, readonly) NSData *receivedData;
 @property (nonatomic, readonly) void (^handler)(NSHTTPURLResponse *response, id object, NSError *error);
+@property (nonatomic) BOOL callHandlerOnBackground;
 
-+ (void)sendRequest:(NSURLRequest *)request handler:(void (^)(NSHTTPURLResponse *response, id object, NSError *error))handler;
-+ (void)sendRequest:(NSURLRequest *)request
-              queue:(NSOperationQueue *)queue
-            handler:(void (^)(NSHTTPURLResponse *response, id object, NSError *error))handler;
++ (ISHTTPOperation*)sendRequest:(NSURLRequest *)request handler:(void (^)(NSHTTPURLResponse *response, id object, NSError *error))handler;
++ (ISHTTPOperation*)sendRequest:(NSURLRequest *)request
+                          queue:(NSOperationQueue *)queue
+                        handler:(void (^)(NSHTTPURLResponse *response, id object, NSError *error))handler;
 
 - (id)initWithRequest:(NSURLRequest *)request handler:(void (^)(NSHTTPURLResponse *response, id object, NSError *error))handler;
 - (id)processData:(NSData *)data;

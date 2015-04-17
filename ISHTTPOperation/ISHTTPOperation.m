@@ -16,19 +16,20 @@
 
 #pragma mark -
 
-+ (void)sendRequest:(NSURLRequest *)request handler:(void (^)(NSHTTPURLResponse *, id, NSError *))handler
++ (ISHTTPOperation*)sendRequest:(NSURLRequest *)request handler:(void (^)(NSHTTPURLResponse *, id, NSError *))handler
 {
-    [self sendRequest:request
-                queue:[ISHTTPOperationQueue defaultQueue]
-              handler:handler];
+    return [self sendRequest:request
+                       queue:[ISHTTPOperationQueue defaultQueue]
+                     handler:handler];
 }
 
-+ (void)sendRequest:(NSURLRequest *)request
++ (ISHTTPOperation*)sendRequest:(NSURLRequest *)request
               queue:(NSOperationQueue *)queue
             handler:(void (^)(NSHTTPURLResponse *, id, NSError *))handler
 {
     ISHTTPOperation *operation = [[[self class] alloc] initWithRequest:request handler:handler];
     [queue addOperation:operation];
+    return operation;
 }
 
 - (id)init
@@ -164,12 +165,21 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     id object = [self processData:self.buffer];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if (self.callHandlerOnBackground) {
+        // handler should take care of switching to main thread
         if (self.handler) {
             self.handler(self.response, object, nil);
         }
-    });
-    
+    }
+    else {
+        // on main
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.handler) {
+                self.handler(self.response, object, nil);
+            }
+        });
+    }
+
     [self completeOperation];
 }
 
